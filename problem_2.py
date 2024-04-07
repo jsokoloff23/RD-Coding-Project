@@ -1,9 +1,11 @@
+"""
+Problem 2 using pycromanager and its image_process_fn hook to process images.
+"""
 import numpy as np
 from pycromanager import Acquisition, multi_d_acquisition_events
 
 import pycro
 from pycro import core
-
 
 #user parameters
 save_dir = r"problem_2_output"

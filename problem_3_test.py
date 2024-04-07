@@ -1,7 +1,6 @@
 """
 File used to test segmentation functionality for problem 3.
 """
-
 import tifffile
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
@@ -9,7 +8,6 @@ import matplotlib.patches as mpatches
 from skimage.filters import threshold_otsu
 from skimage.measure import label, regionprops
 from skimage.color import label2rgb
-
 
 #parameters
 filename = "Assoc_RDEng_test.tif"

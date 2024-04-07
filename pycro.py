@@ -5,13 +5,11 @@ and core objects, some useful constants, and some classes and functions that
 help abstract the studio and core API. 
 
 """
-
 import contextlib
 from datetime import datetime
 
 import pycromanager
 from pycromanager import Studio, Core, JavaObject
-
 
 studio = Studio()
 core = Core()

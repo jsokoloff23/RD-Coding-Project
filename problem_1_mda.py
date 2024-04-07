@@ -1,12 +1,9 @@
 """
-Problem 1 using MDA.
+Problem 1 using MDA to perform acquistition.
 """
-
-
 import pycro
 import utils
 from pycro import studio
-
 
 #user parameters
 save_dir = r"C:/cz/problem_1"
@@ -16,7 +13,6 @@ step_size = 0.1
 z_start = 0
 #set to 1 for positive and -1 for negative
 z_stack_direction = 1
-
 
 #other acquisition parameters
 z_end = z_start + z_stack_direction*(z_slices - 1)*step_size

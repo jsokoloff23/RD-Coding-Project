@@ -1,3 +1,7 @@
+"""
+Module that contains utility functions.
+"""
+
 def get_stage_grid_positions(spacing: float = 500, grid_shape: tuple[int, int] = (3,3)
                      ) -> list[tuple[float, float]]:
     """

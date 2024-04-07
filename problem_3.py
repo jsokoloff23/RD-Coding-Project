@@ -1,3 +1,6 @@
+"""
+Problem 3 using skimage to segment and calculate eccentriity of cells.
+"""
 import tifffile
 import matplotlib.pyplot as plt
 
