@@ -5,7 +5,8 @@ import pycro
 from pycro import core
 
 
-save_dir = r"C:/cz/problem_2"
+#user parameters
+save_dir = r"problem_2_output"
 channels = ["DAPI"]
 exposure = 10
 num_time_points = 100
@@ -14,9 +15,6 @@ radius = 15
 
 
 def image_process_fn(image, metadata):
-    """
-    
-    """
     #creates array of pixels coords where pixel value is equal to target value
     pixel_coords = np.argwhere(image == pixel_value_target)
     for coord in pixel_coords:
