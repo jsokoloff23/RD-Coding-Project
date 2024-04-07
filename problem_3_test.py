@@ -1,5 +1,5 @@
 """
-File used to test functionality for problem 3
+File used to test segmentation functionality for problem 3.
 """
 
 import tifffile
@@ -14,18 +14,16 @@ from skimage.color import label2rgb
 #parameters
 filename = "Assoc_RDEng_test.tif"
 
-
 image_stack = tifffile.TiffFile(filename)
 image = image_stack.pages[0].asarray()
 
-# apply threshold
+#apply threshold
 thresh = threshold_otsu(image)
-# label image regions
+#label image regions
 label_image = label(image > thresh)
-# to make the background transparent, pass the value of `bg_label`,
-# and leave `bg_color` as `None` and `kind` as `overlay`
+#to make the background transparent, pass the value of `bg_label`,
+#and leave `bg_color` as `None` and `kind` as `overlay`
 image_label_overlay = label2rgb(label_image, image=image)
-
 fig, ax = plt.subplots(figsize=(10, 6))
 ax.imshow(image_label_overlay)
 
