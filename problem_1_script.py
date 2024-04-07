@@ -1,14 +1,30 @@
+"""
+Problem 1 using core as backend. In my lab, the acquisition code is 
+written in this style, mainly because we require the use of other external 
+hardware devices and this scripting style allows for finer control of timing 
+and hardware.
+"""
+
+
+import contextlib
+
 import pycro
 import utils
 from pycro import core
 
 
+#user parameters
 save_dir = r"C:/cz/problem_1"
 channels = ["DAPI", "FITC"]
 z_slices = 12
+step_size = 0.1
 z_start = 0
-z_end = 1.1
-step_size = abs(z_start-z_end)/z_slices
+#set to 1 for positive and -1 for negative
+z_stack_direction = 1
+
+
+#other acquisition parameters
+z_end = z_start + z_stack_direction*(z_slices - 1)*step_size
 xy_positions = utils.get_stage_grid_positions()
 
 
@@ -21,13 +37,12 @@ for pos_num, pos in enumerate(xy_positions):
     summary = pycro.SummaryMetadataBuilder().channel_list(
         channels).z(z_slices).step(step_size).build()
     data.set_summary_metadata(summary)
+    #in our software, stage has its own module and set of api, so doesn't
+    #violate abstraction layer principles.
     core.set_xy_position(x_pos, y_pos)
     for z in range(z_slices):
-        #determine which direction stage is moving
-        if z_start <= z_end:
-            z_pos = z_start + z*step_size
-        else:
-            z_pos = z_start - z*step_size
+        #z position depends on which direction stage is moving
+        z_pos = z_start + z*z_stack_direction*step_size
         core.set_position(z_pos)
         for channel_num, channel in enumerate(channels):
             pycro.set_channel(channel)
@@ -35,8 +50,7 @@ for pos_num, pos in enumerate(xy_positions):
             coords = pycro.ImageCoordsBuilder().z(z).c(channel_num).build()
             meta = pycro.ImageMetadataBuilder(image).x(x_pos).y(y_pos).z(z_pos).build()
             image = image.copy_with(coords, meta)
-            try:
+            #supress NullPointerException on Java side. 
+            with contextlib.suppress(Exception):
                 data.put_image(image)
-            except:
-                pass
     data.close()
