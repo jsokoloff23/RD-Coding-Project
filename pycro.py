@@ -1,19 +1,8 @@
 """
-This module holds the studio and core objects, which are used to access the 
-Micro-Manager API. In addition, it holds some basic methods and classes
-that wrap the Java API in a more pythonic fashion.
-
-Please see the following Micro-Manager 2.0 API guide:
-
-https://micro-manager.org/Version_2.0_API
-
-Core API:
-
-https://micro-manager.org/apidoc/mmcorej/latest/mmcorej/CMMCore.html
-
-Studio API:
-
-https://micro-manager.org/apidoc/mmstudio/latest/org/micromanager/Studio.html
+This module is an adaptation of a module in the pycro-manager-based 
+acquisition program I wrote for my lab, LS_Pycro_App. It holds the studio
+and core objects, some useful constants, and some classes and functions that
+help abstract the studio and core API. 
 
 """
 
@@ -27,16 +16,17 @@ from pycromanager import Studio, Core, JavaObject
 studio = Studio()
 core = Core()
 
-
+#Public constants
+CHANNEL = "Channel"
 MULTIPAGE_TIFF = studio.data().get_preferred_save_mode().MULTIPAGE_TIFF
+
+
+#private constants
 #These are found in the MM summary metadata class.
 _C_AXIS = "channel"
 _T_AXIS = "time"
 _Z_AXIS = "z"
 _P_AXIS= "position"
-
-#Group name for channels in Micro-Manager
-CHANNEL = "Channel"
 
 
 class ImageCoordsBuilder():
@@ -112,8 +102,8 @@ class SummaryMetadataBuilder():
     every method returns self (akin the builder design), except for build() 
     which returns an MM DefaultCoords object.
 
-    #### channel_list(channel_list:list)
-        adds channel_list as channel_names for summary metadata, sets intended 
+    #### channel_list(channels: list | tuple | str)
+        adds channels as channel_names for summary metadata, sets intended 
         number of channels to len(channel_list), and adds "channel" to axis 
         order.
 
@@ -150,11 +140,13 @@ class SummaryMetadataBuilder():
         #unfortunately, can't just use a python list as channel_names() takes a 
         #java iterable object. Easiest one to grab and use is ArrayList.
         channel_array = JavaObject("java.util.ArrayList")
-        if isinstance(channels, list):
+        if isinstance(channels, (list, tuple)):
+            #Adds channel to intended builder for axis order
             self._intended_builder.c(len(channels))
             for channel in channels:
                 channel_array.add(channel)
-        else:
+        elif isinstance(channels, str):
+            #if channels is str, only one channel, so intended c is 1
             self._intended_builder.c(1)
             channel_array.add(channels)
 
@@ -262,7 +254,6 @@ class MultipageDatastore():
     See: https://micro-manager.org/apidoc/mmstudio/latest/org/micromanager/data/Datastore.html
     """
     def __init__(self, save_path):
-        save_path = save_path
         self._datastore = studio.data().create_multipage_tiff_datastore(save_path, True, False)
     
     def freeze(self):
@@ -298,9 +289,10 @@ def get_channel_spec_list(channels: list):
     channel_list = JavaObject("java.util.ArrayList")
     for channel in channels:
         spec_builder = studio.acquisitions().channel_spec_builder()
-        spec_builder = spec_builder.channel_group(_CHANNEL).config(channel).do_z_stack(True)
+        spec_builder = spec_builder.channel_group(CHANNEL).config(channel).do_z_stack(True)
         channel_list.add(spec_builder.build())
     return channel_list
+
 
 def set_position_list(xyz_positions: list[tuple[float, float, float]]):
     position_list = studio.positions().get_position_list()
