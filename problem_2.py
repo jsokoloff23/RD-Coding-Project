@@ -19,11 +19,11 @@ radius = 15
 def image_process_fn(image, metadata):
     #creates array of pixels coords where pixel value is equal to target value
     pixel_coords = np.argwhere(image == pixel_value_target)
+    #grid to create mask
+    y_range, x_range = np.ogrid[:image.shape[0], :image.shape[1]]
     for coord in pixel_coords:
         #coords are (y,x) because ndarray
         y, x = coord
-        #grid to create mask
-        y_range, x_range = np.ogrid[:image.shape[0], :image.shape[1]]
         #binary mask for pixels within radius of target pixel
         mask = (x_range - x)**2 + (y_range - y)**2 <= radius**2
         #sets pixels in image to black according to binary mask
