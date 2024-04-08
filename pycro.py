@@ -20,7 +20,8 @@ MULTIPAGE_TIFF = studio.data().get_preferred_save_mode().MULTIPAGE_TIFF
 
 
 #private constants
-#These are found in the MM summary metadata class.
+#These are found in the MM summary metadata class and are used in setting the
+#axis order in summary metadata.
 _C_AXIS = "channel"
 _T_AXIS = "time"
 _Z_AXIS = "z"
@@ -88,10 +89,10 @@ class SummaryMetadataBuilder():
     The axis order is determined on the order of the called methods. That is, 
     if channel_list(), then z(), then t() are called, then the axis order will 
     be channel, z, time. The order in which these are added should be from 
-    inner-most iterated to outer-most.
+    innermost iterated to outermost.
 
     Example: For a normal video acquisition, a video is taken with each 
-    channel. Therefore, the inner-most iterated is the time (frame number) and
+    channel. Therefore, the innermost iterated is the time (frame number) and
     the outer is channel. Thus, t (number of frames) should be set first and 
     then the channel list.
 
@@ -171,10 +172,16 @@ class SummaryMetadataBuilder():
         return self
 
     def step(self, step_size):
+        """
+        sets step size in summary metadata
+        """
         self._summary_builder.z_step_um(step_size)
         return self
     
     def interval_ms(self, interval_ms):
+        """
+        sets interval_ms property in summary metadata
+        """
         self._summary_builder.wait_interval(interval_ms)
         return self
 
@@ -227,14 +234,23 @@ class ImageMetadataBuilder():
             self._meta_builder = studio.data().metadata_builder()
 
     def x(self, x_pos):
+        """
+        sets x_position_um in image metadata
+        """
         self._meta_builder.x_position_um(x_pos)
         return self
 
     def y(self, y_pos):
+        """
+        sets y_position_um in image metadata
+        """
         self._meta_builder.y_position_um(y_pos)
         return self
 
     def z(self, z_pos):
+        """
+        sets z_position_um in image metadata
+        """
         self._meta_builder.z_position_um(z_pos)
         return self
     
@@ -284,6 +300,10 @@ def snap_image():
 
 
 def get_channel_spec_list(channels: list):
+    """
+    gets channel_spec_list as pycromanager JavaObject of class
+    java.util.ArrayList to be passed in to sequence settings.
+    """
     channel_list = JavaObject("java.util.ArrayList")
     for channel in channels:
         spec_builder = studio.acquisitions().channel_spec_builder()
@@ -293,6 +313,9 @@ def get_channel_spec_list(channels: list):
 
 
 def set_position_list(xyz_positions: list[tuple[float, float, float]]):
+    """
+    sets the position list in Micro-Manager to positions in xyz_positions.
+    """
     position_list = studio.positions().get_position_list()
     position_list.clear_all_positions()
     for pos in xyz_positions:

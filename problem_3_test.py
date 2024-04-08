@@ -9,7 +9,7 @@ from skimage.filters import threshold_otsu
 from skimage.measure import label, regionprops
 from skimage.color import label2rgb
 
-#parameters
+#user parameters
 filename = "Assoc_RDEng_test.tif"
 
 image_stack = tifffile.TiffFile(filename)

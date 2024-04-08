@@ -7,10 +7,9 @@ import matplotlib.pyplot as plt
 from skimage.filters import threshold_otsu
 from skimage.measure import label, regionprops
 
-
+#user parameters
 filename = "Assoc_RDEng_test.tif"
 hist_save_path = "problem 3 output/nucleus_eccentricity.png"
-
 
 image_stack = tifffile.TiffFile(filename)
 eccentricities = []
@@ -27,7 +26,6 @@ for page_num, page in enumerate(image_stack.pages):
         #cells and too large to be single cells.
         if 100 <= region.area <= 2000:
             eccentricities.append(region.eccentricity)
-
 
 plt.hist(eccentricities, 40, color="orange")
 plt.title("Cell Nucleus Eccentricities")
