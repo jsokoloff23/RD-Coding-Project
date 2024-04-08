@@ -307,7 +307,10 @@ def get_channel_spec_list(channels: list):
     channel_list = JavaObject("java.util.ArrayList")
     for channel in channels:
         spec_builder = studio.acquisitions().channel_spec_builder()
-        spec_builder = spec_builder.channel_group(CHANNEL).config(channel).do_z_stack(True)
+        spec_builder = spec_builder \
+                           .channel_group(CHANNEL) \
+                           .config(channel) \
+                           .do_z_stack(True)
         channel_list.add(spec_builder.build())
     return channel_list
 
@@ -319,7 +322,11 @@ def set_position_list(xyz_positions: list[tuple[float, float, float]]):
     position_list = studio.positions().get_position_list()
     position_list.clear_all_positions()
     for pos in xyz_positions:
-        multi_args = [core.get_xy_stage_device(), pos[0], pos[1], core.get_focus_device(), pos[2]]
+        multi_args = [core.get_xy_stage_device(), 
+                      pos[0], 
+                      pos[1], 
+                      core.get_focus_device(), 
+                      pos[2]]
         multi_position = pycromanager.JavaObject("org.micromanager.MultiStagePosition", args=multi_args)
         multi_position.set_label(str(pos))
         position_list.add_position(multi_position)
