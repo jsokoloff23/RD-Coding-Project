@@ -11,7 +11,7 @@ import utils
 from pycro import core
 
 #user parameters
-save_dir = r"C:/cz/problem_1"
+save_dir = r"C:/cz/problem_1_script"
 channels = ["DAPI", "FITC"]
 z_slices = 12
 step_size = 0.1
